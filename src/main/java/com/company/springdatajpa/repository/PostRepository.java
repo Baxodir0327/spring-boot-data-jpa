@@ -1,5 +1,7 @@
 package com.company.springdatajpa.repository;
 
+import com.company.springdatajpa.dto.IPostDTO;
+import com.company.springdatajpa.dto.PostDTO;
 import com.company.springdatajpa.entity.Post;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -15,15 +17,17 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    //    @Query(value = "SELECT p FROM Post p WHERE p.userId=:userId")//jpql
-    //    @Query(nativeQuery = true, value = "SELECT p.* FROM post p WHERE p.user_id=:userId")
-    //namedQuery
-    //@Query(name = "getAllByUserId")
-    @Query(nativeQuery = true, name = "getAllByUserI.native")
-    List<Post> getAllPostsByUserId1(Integer userId);
+    // jpql
+    // @Query(value = "select p from Post p where p.userId = ?1")
+    // native query
+    // @Query(nativeQuery = true, value = "select p.* from post p where p.user_id = ?1")
+    // namedquery
+    // @Query(name = "Post.getAllPostsByUserID")
+    @Query(nativeQuery = true, name = "Post.getAllPostsByUserID.Native")
+    List<Post> getAllPostsByUserId(Integer userID);
 
-    @Query("SELECT p FROM Post p")
-    List<Post> getAllPostWithSortedColumn(Sort sort);
+    @Query(value = "select p from Post p")
+    List<Post> getAllPostsWithSortedColumns(Sort sort);
 
     // @Query(value = "select p from Post p")
     @Query(nativeQuery = true,
@@ -40,4 +44,21 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     @Query("delete Post p where p.userId = ?1")
     void deletePostsByUserId(Integer userId);
+
+    Post findByTitleIgnoreCaseAndUserId(String title, Integer userId);
+
+    List<Post> findAllByTitleStartingWith(String title);
+
+    List<Post> findAllByTitleEndingWith(String title);
+
+    List<IPostDTO> findAllByUserIdLessThanEqual(Integer userId);
+
+    List<PostDTO> findAllByUserIdGreaterThanEqual(Integer userId);
+
+    //JPQL
+    //@Query("select new com.company.springdatajpa.dto.PostDTO(p.id,p.title,p.userId) FROM Post p")
+    // Native Query
+     @Query(nativeQuery = true, name = "Post.find.all.by.projection")
+    List<PostDTO> findAllByClassProjection();
+
 }

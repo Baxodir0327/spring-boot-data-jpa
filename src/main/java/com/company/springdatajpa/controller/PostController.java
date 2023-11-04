@@ -1,5 +1,7 @@
 package com.company.springdatajpa.controller;
 
+import com.company.springdatajpa.dto.IPostDTO;
+import com.company.springdatajpa.dto.PostDTO;
 import com.company.springdatajpa.entity.Post;
 import com.company.springdatajpa.repository.CustomPostRepository;
 import com.company.springdatajpa.repository.PostRepository;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.Collection;
 import java.util.List;
 
@@ -23,10 +26,7 @@ public class PostController {
     private final PostRepository postRepository;
     private final CustomPostRepository customPostRepository;
 
-    //    @GetMapping
-//    List<Post> getAll() {
-//        return postRepository.findAll();
-//    }
+
     @GetMapping
     public Page<Post> getAll(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -51,15 +51,10 @@ public class PostController {
     }
 
     @GetMapping("/{userId}")
-    List<Post> getAllByCreatorId(@PathVariable Integer userId) {
-        return postRepository.getAllPostsByUserId1(userId);
+    public List<Post> getAllByCreatorID(@PathVariable Integer userId) {
+        return postRepository.getAllPostsByUserId(userId);
     }
 
-    @GetMapping("/sort")
-    List<Post> getAllBySortColumn() {
-        Sort sort = Sort.by(Sort.Direction.ASC, "title").and(Sort.by(Sort.Direction.DESC, "id"));
-        return postRepository.findAll(sort);
-    }
     @DeleteMapping("/{userId}")
     /*@ResponseStatus(HttpStatus.NO_CONTENT)*/
     public ResponseEntity<?> deletePostsByUserId(@PathVariable Integer userId) {
@@ -67,9 +62,46 @@ public class PostController {
         /*return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);*/
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/sortbyid")
+    public List<Post> getAllPostsWithSortedColumns() {
+        /*Sort sort = Sort.by(Sort.Direction.DESC, "title")
+                .and(Sort.by(Sort.Direction.ASC, "id"));*/
+        Sort.Order title = Sort.Order.desc("title");
+        Sort.Order id = Sort.Order.asc("id");
+        Sort sort = Sort.by(title, id);
+        return postRepository.findAll(sort);
+    }
+
+
     @PostMapping
     public Post save(@RequestBody Post post) {
         return customPostRepository.save(post);
+    }
+
+    @GetMapping("/query/{title}/{userId}")
+    public Post findByTitle(@PathVariable String title, @PathVariable Integer userId) {
+        return postRepository.findByTitleIgnoreCaseAndUserId(title, userId);
+    }
+
+    @GetMapping("/query-st/{title}")
+    public List<Post> findByTitleSt(@PathVariable String title) {
+        return postRepository.findAllByTitleStartingWith(title);
+    }
+
+    @GetMapping("/query-en/{title}")
+    public List<Post> findByTitleEn(@PathVariable String title) {
+        return postRepository.findAllByTitleEndingWith(title);
+    }
+
+    @GetMapping("/interface-projection/{userId}")
+    public List<IPostDTO> interfaceProjection(@PathVariable Integer userId) {
+        return postRepository.findAllByUserIdLessThanEqual(userId);
+    }
+
+    @GetMapping("/class-projection/{userId}")
+    public List<PostDTO> classProjection(@PathVariable Integer userId) {
+        return postRepository.findAllByUserIdGreaterThanEqual(userId);
     }
 
 
