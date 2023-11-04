@@ -1,9 +1,6 @@
 package com.company.springdatajpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -13,6 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
+@NamedQuery(name = "getAllByUserId", query = "SELECT p FROM Post p WHERE p.userId=:userId")
+@NamedNativeQuery(name = "getAllByUserI.native",query = "SELECT p.* FROM post p WHERE p.user_id=?1" ,
+        resultClass = Post.class
+)
 public class Post {
     @Id
     @GeneratedValue
