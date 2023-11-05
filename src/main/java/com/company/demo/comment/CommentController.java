@@ -35,7 +35,7 @@ public class CommentController {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment Not Found With ID: " + id));
         commentRepository.delete(comment);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/")
