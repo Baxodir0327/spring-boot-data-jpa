@@ -20,10 +20,6 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-    @Bean(name = "postPagedResourcesAssembler")
-    public PagedResourcesAssembler<Post> postPagedResourcesAssembler() {
-        return new PagedResourcesAssembler<>(new HateoasPageableHandlerMethodArgumentResolver(), null);
-    }
     @Bean
     CommandLineRunner runner(ObjectMapper objectMapper, PostRepository postRepository) {
         return (args -> {
@@ -33,5 +29,10 @@ public class Application {
             postRepository.saveAll(posts);
         });
     }
+    @Bean(name = "postPagedResourcesAssembler")
+    public PagedResourcesAssembler<Post> postPagedResourcesAssembler() {
+        return new PagedResourcesAssembler<>(new HateoasPageableHandlerMethodArgumentResolver(), null);
+    }
+
 
 }
