@@ -1,10 +1,10 @@
 package com.company.demo.comment;
 
 
+import com.company.demo.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.springboot.springboot.EntityNotFoundException;
 
 import java.util.List;
 
